@@ -40,20 +40,7 @@
                             <outlet property="delegate" destination="Kvl-ex-CZX" id="H0b-Nq-XZh"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Users" id="R97-q6-Ykr">
-                        <rightBarButtonItems>
-                            <barButtonItem image="plus" catalog="system" id="aqq-6O-6E2">
-                                <connections>
-                                    <action selector="addButtonTapped:" destination="Kvl-ex-CZX" id="cYB-dK-oDR"/>
-                                </connections>
-                            </barButtonItem>
-                            <barButtonItem image="magnifyingglass" catalog="system" id="qIW-Un-960">
-                                <connections>
-                                    <action selector="searchButtonTapped:" destination="Kvl-ex-CZX" id="NuX-KH-AxM"/>
-                                </connections>
-                            </barButtonItem>
-                        </rightBarButtonItems>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" title="Users" id="R97-q6-Ykr"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="45S-kJ-3ms" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -79,8 +66,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="magnifyingglass" catalog="system" width="128" height="115"/>
-        <image name="plus" catalog="system" width="128" height="113"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

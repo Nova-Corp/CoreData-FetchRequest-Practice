@@ -17,25 +17,50 @@ class UserListViewController: UITableViewController {
     }()
 
     var users = [UsersEntity]()
+    lazy var searchBar = UISearchBar()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         fetchUsers()
+        setupNavigationBar()
     }
     
-    @IBAction func searchButtonTapped(_ sender: UIBarButtonItem) {
-    
+    func setupNavigationBar() {
+        tableView.tableFooterView = UIView()
+        searchBar.delegate = self
+        let addUserBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "plus"),
+                                                   style: .plain,
+                                                   target: self,
+                                                   action: #selector(addButtonTapped))
+        addUserBarButtonItem.tintColor = .link
+        let userSearchBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "magnifyingglass"),
+                                                   style: .plain,
+                                                   target: self,
+                                                   action: #selector(searchButtonTapped))
+        userSearchBarButtonItem.tintColor = .link
+        let barButtonItems = [addUserBarButtonItem, userSearchBarButtonItem]
+        navigationItem.rightBarButtonItems = barButtonItems
     }
     
-    func fetchUsers() {
+    @objc func searchButtonTapped(_ sender: UIBarButtonItem) {
+        navigationItem.rightBarButtonItems = nil
+        navigationItem.titleView = searchBar
+        searchBar.showsCancelButton = true
+    }
+    
+    func fetchUsers(name: String? = nil) {
         let userFetchRequest: NSFetchRequest = UsersEntity.fetchRequest()
+        if let name = name {
+            let predicate = NSPredicate(format: "name contains[c] %@", name)
+            userFetchRequest.predicate = predicate
+        }
         if let users = try? managedContext.fetch(userFetchRequest) {
             self.users = users
             tableView.reloadData()
         }
     }
     
-    @IBAction func addButtonTapped(_ sender: Any) {
+    @objc func addButtonTapped(_ sender: UIBarButtonItem) {
         let alertController = UIAlertController(title: "Add New Name",
                                                 message: "",
                                                 preferredStyle: UIAlertController.Style.alert)
@@ -55,6 +80,18 @@ class UserListViewController: UITableViewController {
         alertController.addAction(saveAction)
         
         present(alertController, animated: true, completion: nil)
+    }
+}
+
+extension UserListViewController: UISearchBarDelegate {
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        navigationItem.titleView = nil
+        setupNavigationBar()
+        fetchUsers()
+    }
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        searchText.isEmpty ? fetchUsers() : fetchUsers(name: searchText)
     }
 }
 
