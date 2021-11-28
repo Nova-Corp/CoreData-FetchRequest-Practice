@@ -16,7 +16,7 @@ extension UsersEntity {
         return NSFetchRequest<UsersEntity>(entityName: "UsersEntity")
     }
 
-    @NSManaged public var name: NSObject?
+    @NSManaged public var name: String?
 
 }
 
