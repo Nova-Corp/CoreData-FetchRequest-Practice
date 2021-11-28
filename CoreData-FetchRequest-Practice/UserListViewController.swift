@@ -18,17 +18,24 @@ class UserListViewController: UITableViewController {
 
     var users = [UsersEntity]()
     lazy var searchBar = UISearchBar()
+    var infoLabel: UILabel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        loadfirstTime()
         fetchUsers()
         setupNavigationBar()
-        loadfirstTime()
     }
     
     func loadfirstTime() {
         tableView.tableFooterView = UIView()
         searchBar.delegate = self
+        view.backgroundColor = .white
+        let size = UIScreen.main.bounds
+        infoLabel = UILabel(frame: CGRect(x: 0, y: (size.height/2 - 100), width: size.width, height: 50))
+        infoLabel.text = "No user found!"
+        infoLabel.textAlignment = .center
+        view.addSubview(infoLabel)
     }
     
     func setupNavigationBar() {
@@ -50,6 +57,7 @@ class UserListViewController: UITableViewController {
         navigationItem.rightBarButtonItems = nil
         navigationItem.titleView = searchBar
         searchBar.showsCancelButton = true
+        searchBar.text = ""
     }
     
     func fetchUsers(name: String? = nil) {
@@ -62,6 +70,7 @@ class UserListViewController: UITableViewController {
             self.users = users
             tableView.reloadData()
         }
+        infoLabel.isHidden = !users.isEmpty
     }
     
     @objc func addButtonTapped(_ sender: UIBarButtonItem) {
@@ -114,6 +123,7 @@ extension UserListViewController {
             self.users.remove(at: indexPath.row)
             try? self.managedContext.save()
             self.tableView.deleteRows(at: [indexPath], with: .automatic)
+            self.infoLabel.isHidden = !self.users.isEmpty
             complete(true)
         }
         deleteAction.backgroundColor = .red
