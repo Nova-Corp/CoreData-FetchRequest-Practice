@@ -23,11 +23,15 @@ class UserListViewController: UITableViewController {
         super.viewDidLoad()
         fetchUsers()
         setupNavigationBar()
+        loadfirstTime()
+    }
+    
+    func loadfirstTime() {
+        tableView.tableFooterView = UIView()
+        searchBar.delegate = self
     }
     
     func setupNavigationBar() {
-        tableView.tableFooterView = UIView()
-        searchBar.delegate = self
         let addUserBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "plus"),
                                                    style: .plain,
                                                    target: self,
@@ -102,5 +106,19 @@ extension UserListViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "UserListTableViewCell", for: indexPath)
         cell.textLabel?.text = users[indexPath.row].name
         return cell
+    }
+    
+    override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let deleteAction = UIContextualAction(style: .destructive, title: "Delete") { _, _, complete in
+            self.managedContext.delete(self.users[indexPath.row])
+            self.users.remove(at: indexPath.row)
+            try? self.managedContext.save()
+            self.tableView.deleteRows(at: [indexPath], with: .automatic)
+            complete(true)
+        }
+        deleteAction.backgroundColor = .red
+        let configuration = UISwipeActionsConfiguration(actions: [deleteAction])
+        configuration.performsFirstActionWithFullSwipe = true
+        return configuration
     }
 }
